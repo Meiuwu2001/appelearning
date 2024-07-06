@@ -16,6 +16,9 @@ const Dashboard = () => {
       <Link href="/admin" className="px-4 py-2 bg-blue-500 text-white rounded">
         Administrar Usuarios
       </Link>
+      <Link href="/tasks" className="px-4 py-2 bg-blue-500 text-white rounded">
+        Administrar Tareas
+      </Link>
     </div>
   );
 };
