@@ -17,17 +17,21 @@ export async function GET() {
     );
   }
 }
-export async function POST() {
-  const { titulo, descripcion, grupo_asignada } = await request.json();
+export async function POST(request) {
   try {
-    await db.query(
-      "INSERT INTO tareas (titulo, descripcion, grupo_asignada) VALUES (?,?,?)",
-      [titulo, descripcion, grupo_asignada]
-    );
-    return NextResponse.json(
-      { message: "Task created successfully" },
-      { status: 201 }
-    );
+    const { titulo, descripcion, grupo_asignada } = await request.json();
+
+    const result = await db.query("INSERT INTO tareas SET ?", {
+      titulo,
+      descripcion,
+      grupo_asignada,
+    });
+    console.log(result);
+    const newId = result.insertId;
+    return NextResponse.json({
+      message: "Task created successfully",
+      id: newId,
+    });
   } catch (error) {
     console.error("Error querying the database:", error);
     return NextResponse.json(

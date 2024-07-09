@@ -14,14 +14,21 @@ export async function GET() {
   }
 }
 
-export async function POST() {
-  const { nombre, apellidos, id_grupo } = JSON.parse(await request.text());
+export async function POST(request) {
   try {
-    await db.query(
-      "INSERT INTO alumnos (nombre, apellidos, id_grupo) VALUES (?,?,?)",
-      [nombre, apellidos, id_grupo]
-    );
-    return NextResponse.json({ message: "Alumno creado correctamente" });
+    const { nombre, apellidos, id_grupo } = JSON.parse(await request.text());
+
+    const result = await db.query("INSERT INTO alumnos SET ?", {
+      nombre,
+      apellidos,
+      id_grupo,
+    });
+    const newId = result.insertId;
+    console.log(result);
+    return NextResponse.json({
+      message: "Alumno creado correctamente",
+      id: newId,
+    });
   } catch (error) {
     console.error("Error querying the database:", error);
     return NextResponse.json(

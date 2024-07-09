@@ -38,19 +38,25 @@ export async function GET() {
  *
  * @throws Will throw an error if there is a problem querying the database.
  */
-export async function POST() {
+export async function POST(request) {
   // Parse the request body
-  const { user, Password, role } = await request.json();
   try {
     // Perform the database operation
-    await db.query("INSERT INTO users (user, Password, role) VALUES (?,?,?)", [
+    const { user, Password, role } = await request.json();
+
+    const result = await db.query("INSERT INTO users SET ?", {
       user,
       Password,
       role,
-    ]);
+    });
+    console.log(result);
+    const newId = result.insertId;
 
     // Return a success response
-    return NextResponse.json({ message: "User created successfully" });
+    return NextResponse.json({
+      message: "User created successfully",
+      id: newId,
+    });
   } catch (error) {
     console.error("Error querying the database:", error);
     return NextResponse.json(
