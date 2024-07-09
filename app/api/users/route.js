@@ -40,12 +40,12 @@ export async function GET() {
  */
 export async function POST() {
   // Parse the request body
-  const { name, password, role } = await request.json();
+  const { user, Password, role } = await request.json();
   try {
     // Perform the database operation
-    await db.query("INSERT INTO users (name, password, role) VALUES (?,?,?)", [
-      name,
-      password,
+    await db.query("INSERT INTO users (user, Password, role) VALUES (?,?,?)", [
+      user,
+      Password,
       role,
     ]);
 
