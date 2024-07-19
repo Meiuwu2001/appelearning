@@ -5,15 +5,15 @@ import { useRouter } from "next/navigation";
 import axios from "axios";
 
 const AddUser = () => {
-  const [name, setName] = useState("");
-  const [email, setEmail] = useState("");
+  const [user, setUser] = useState("");
+  const [password, setPassword] = useState("");
   const [role, setRole] = useState("estudiante");
   const router = useRouter();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      await axios.post("/api/users", { name, email, role });
+      await axios.post("/api/users", { user, password, role });
       router.push("/admin");
     } catch (error) {
       console.error("Error adding user:", error);
@@ -25,21 +25,21 @@ const AddUser = () => {
       <h1 className="text-2xl font-bold mb-4">Añadir Usuario</h1>
       <form onSubmit={handleSubmit}>
         <div className="mb-4">
-          <label className="block text-gray-700">Nombre</label>
+          <label className="block text-gray-700">Usuario</label>
           <input
             type="text"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
+            value={user}
+            onChange={(e) => setUser(e.target.value)}
             className="w-full p-2 border rounded"
             required
           />
         </div>
         <div className="mb-4">
-          <label className="block text-gray-700">Correo</label>
+          <label className="block text-gray-700">Contraseña</label>
           <input
-            type="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
+            type="password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
             className="w-full p-2 border rounded"
             required
           />

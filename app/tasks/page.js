@@ -15,8 +15,8 @@ const Tasks = () => {
 
   const fetchTasks = async () => {
     try {
-      const response = await axios.get("/api/tasks");
-      setTasks(response.data);
+      const response = await axios.get("/api/tareas");
+      setTasks(response.data.message);
       setLoading(false);
     } catch (error) {
       console.error("Error fetching tasks:", error);
@@ -59,11 +59,11 @@ const Tasks = () => {
             <tbody>
               {tasks.map((task) => (
                 <tr key={task.id}>
-                  <td className="py-2 px-4 border-b">{task.title}</td>
-                  <td className="py-2 px-4 border-b">{task.description}</td>
-                  <td className="py-2 px-4 border-b">
+                  <td className="py-2 px-4 border-b">{task.titulo}</td>
+                  <td className="py-2 px-4 border-b">{task.descripcion}</td>
+                  {/* <td className="py-2 px-4 border-b">
                     {task.assignedTo.join(", ")}
-                  </td>
+                  </td> */}
                   <td className="py-2 px-4 border-b">
                     <Link
                       href={`/tasks/edit/${task.id}`}

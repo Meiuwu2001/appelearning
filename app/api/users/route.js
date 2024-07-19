@@ -1,4 +1,4 @@
-// pages/api/your-endpoint.js
+// pages/api/users.js
 import { NextResponse } from "next/server";
 import db from "@/libs/db";
 
@@ -25,12 +25,13 @@ export async function GET() {
     );
   }
 }
+
 /**
  * This function handles POST requests to the API endpoint.
  * It creates a new user in the database based on the provided request body.
  *
  * @param {Object} request - The incoming request object.
- * @param {string} request.body.name - The name of the user to be created.
+ * @param {string} request.body.user - The name of the user to be created.
  * @param {string} request.body.password - The password of the user to be created.
  * @param {string} request.body.role - The role of the user to be created.
  *
@@ -39,23 +40,25 @@ export async function GET() {
  * @throws Will throw an error if there is a problem querying the database.
  */
 export async function POST(request) {
-  // Parse the request body
   try {
-    // Perform the database operation
-    const { user, Password, role } = await request.json();
+    // Parse the request body
+    const { user, password, role } = await request.json();
 
-    const result = await db.query("INSERT INTO users SET ?", {
-      user,
-      Password,
-      role,
-    });
-    console.log(result);
-    const newId = result.insertId;
+    // Validate input
+    if (!user || !password || !role) {
+      return NextResponse.json(
+        { error: "All fields (user, password, role) are required" },
+        { status: 400 }
+      );
+    }
+
+    // Perform the database operation
+    const result = await db.query("INSERT INTO users (user, password, role) VALUES (?, ?, ?)", [user, password, role]);
 
     // Return a success response
     return NextResponse.json({
       message: "User created successfully",
-      id: newId,
+      id: result.insertId,
     });
   } catch (error) {
     console.error("Error querying the database:", error);

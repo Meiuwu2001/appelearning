@@ -2,12 +2,12 @@ import { NextResponse } from "next/server";
 import db from "@/libs/db";
 export async function GET(request, { params }) {
   try {
-    const [rows] = await db.query("SELECT * FROM alumnos WHERE id = ?", [
+    const [rows] = await db.query("SELECT * FROM users WHERE id = ?", [
       params.id,
     ]);
     if (rows.length === 0) {
       return NextResponse.json(
-        { message: "Alumno no encontrado" },
+        { message: "Usuario no encontrado" },
         { status: 404 }
       );
     }
@@ -27,17 +27,15 @@ export async function GET(request, { params }) {
 export async function DELETE(request, { params }) {
   // Implementación de la función DELETE
   try {
-    const result = await db.query("DELETE FROM alumnos WHERE id= ?", [
-      params.id,
-    ]);
+    const result = await db.query("DELETE FROM users WHERE id= ?", [params.id]);
     if (result.affectedRows === 0) {
       return NextResponse.json(
-        { message: "Alumno no encontrado" },
+        { message: "Usuario no encontrado" },
         { status: 404 }
       );
     } else {
       return NextResponse.json(
-        { message: "Alumno eliminado correctamente" },
+        { message: "Usuario eliminado correctamente" },
         { status: 200 }
       );
     }
@@ -50,27 +48,26 @@ export async function DELETE(request, { params }) {
     );
   }
 }
-
 export async function PUT(request, { params }) {
   try {
     const data = await request.json();
-    const result = await db.query("UPDATE alumnos SET ? WHERE id=?", [
+    const result = await db.query("UPDATE users SET ? WHERE id=?", [
       data,
       params.id,
     ]);
     if (result.affectedRows === 0) {
       return NextResponse.json(
-        { message: "Alumno no encontrado" },
+        { message: "Usuario no encontrado" },
         { status: 404 }
       );
     }
     const [updatedProduct] = await db.query(
-      "SELECT * FROM alumnos WHERE id = ?",
+      "SELECT * FROM users WHERE id = ?",
       [params.id]
     );
 
     return NextResponse.json({
-      message: "Alumno Actualizado",
+      message: "Usuario Actualizado",
       updatedProduct,
     });
   } catch (error) {

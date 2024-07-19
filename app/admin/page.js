@@ -16,7 +16,7 @@ const Admin = () => {
   const fetchUsers = async () => {
     try {
       const response = await axios.get("/api/users");
-      setUsers(response.data);
+      setUsers(response.data.message); // Acceder a la lista de usuarios
       setLoading(false);
     } catch (error) {
       console.error("Error fetching users:", error);
@@ -24,14 +24,14 @@ const Admin = () => {
     }
   };
 
-  const deleteUser = async (id) => {
-    try {
-      await axios.delete(`/api/users/${id}`);
-      fetchUsers();
-    } catch (error) {
-      console.error("Error deleting user:", error);
-    }
-  };
+  // const deleteUser = async (id) => {
+  //   try {
+  //     await axios.delete(`/api/users/${id}`);
+  //     fetchUsers();
+  //   } catch (error) {
+  //     console.error("Error deleting user:", error);
+  //   }
+  // };
 
   return (
     <div className="flex">
@@ -50,8 +50,7 @@ const Admin = () => {
           <table className="min-w-full bg-white">
             <thead>
               <tr>
-                <th className="py-2 px-4 border-b">Nombre</th>
-                <th className="py-2 px-4 border-b">Correo</th>
+                <th className="py-2 px-4 border-b">Usuario</th>
                 <th className="py-2 px-4 border-b">Rol</th>
                 <th className="py-2 px-4 border-b">Acciones</th>
               </tr>
@@ -59,8 +58,7 @@ const Admin = () => {
             <tbody>
               {users.map((user) => (
                 <tr key={user.id}>
-                  <td className="py-2 px-4 border-b">{user.name}</td>
-                  <td className="py-2 px-4 border-b">{user.email}</td>
+                  <td className="py-2 px-4 border-b">{user.user}</td>
                   <td className="py-2 px-4 border-b">{user.role}</td>
                   <td className="py-2 px-4 border-b">
                     <Link
