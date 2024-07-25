@@ -53,7 +53,7 @@ export async function DELETE(request, { params }) {
 export async function PUT(request, { params }) {
   try {
     const data = await request.json();
-    const result = await db.query("UPDATE grupo SET ? WHERE idgrupo=?", [
+    const result = await db.query("UPDATE grupo SET ? WHERE idgrupo= ? ", [
       data,
       params.id,
     ]);
@@ -64,7 +64,7 @@ export async function PUT(request, { params }) {
       );
     }
     const [updatedProduct] = await db.query(
-      "SELECT * FROM grupo WHERE id = ?",
+      "SELECT * FROM grupo WHERE idgrupo = ?",
       [params.id]
     );
 

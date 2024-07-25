@@ -6,8 +6,8 @@ import axios from "axios";
 import Sidebar from "../components/sidebar";
 import Modal from "../components/moda";
 
-const Admin = () => {
-  const [users, setUsers] = useState([]);
+const Grupos = () => {
+  const [grupos, setGrupos] = useState([]);
   const [loading, setLoading] = useState(true);
   const [showModal, setShowModal] = useState(false);
   const [userIdToDelete, setUserIdToDelete] = useState(null);
@@ -18,11 +18,11 @@ const Admin = () => {
 
   const fetchUsers = async () => {
     try {
-      const response = await axios.get("/api/users");
-      setUsers(response.data.message); // Acceder a la lista de usuarios
+      const response = await axios.get("/api/grupos");
+      setGrupos(response.data.message); // Acceder a la lista de usuarios
       setLoading(false);
     } catch (error) {
-      console.error("Error fetching users:", error);
+      console.error("Error fetching alumns:", error);
       setLoading(false);
     }
   };
@@ -34,12 +34,12 @@ const Admin = () => {
 
   const confirmDelete = async () => {
     try {
-      await axios.delete(`/api/users/${userIdToDelete}`);
+      await axios.delete(`/api/grupos/${userIdToDelete}`);
       fetchUsers();
       setShowModal(false);
       setUserIdToDelete(null);
     } catch (error) {
-      console.error("Error deleting user:", error);
+      console.error("Error deleting alumns:", error);
     }
   };
 
@@ -60,25 +60,23 @@ const Admin = () => {
           <table className="min-w-full bg-white">
             <thead>
               <tr>
-                <th className="py-2 px-4 border-b">Usuario</th>
-                <th className="py-2 px-4 border-b">Rol</th>
-                <th className="py-2 px-4 border-b">Acciones</th>
+                <th className="py-2 px-4 border-b">Grado y grupo</th>
+                     <th className="py-2 px-4 border-b">Acciones</th>
               </tr>
             </thead>
             <tbody>
-              {users.map((user) => (
-                <tr key={user.id}>
-                  <td className="py-2 px-4 border-b">{user.user}</td>
-                  <td className="py-2 px-4 border-b">{user.role}</td>
+              {grupos.map((grupo) => (
+                <tr key={grupo.id}>
+                  <td className="py-2 px-4 border-b">{grupo.grado_grupo}</td>
                   <td className="py-2 px-4 border-b">
                     <Link
-                      href={`/admin/${user.id}`}
+                      href={`/admin/${grupo.id}`}
                       className="bg-yellow-500 text-white px-2 py-1 rounded"
                     >
                       Editar
                     </Link>
                     <button
-                      onClick={() => handleDeleteClick(user.id)}
+                      onClick={() => handleDeleteClick(grupo.id)}
                       className="bg-red-500 text-white px-2 py-1 rounded ml-2"
                     >
                       Eliminar
@@ -99,4 +97,4 @@ const Admin = () => {
   );
 };
 
-export default Admin;
+export default Grupos;

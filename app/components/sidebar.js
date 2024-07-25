@@ -45,6 +45,39 @@ const Sidebar = () => {
             Tareas
           </div>
         </Link>
+        <Link href="/docentes" passHref>
+          <div
+            className={`cursor-pointer block py-2.5 px-4 rounded transition duration-200 ${
+              pathname === "/docentes"
+                ? "bg-gray-700 text-white"
+                : "text-gray-300 hover:bg-gray-700 hover:text-white"
+            }`}
+          >
+            Docentes
+          </div>
+        </Link>
+        <Link href="/alumnos" passHref>
+          <div
+            className={`cursor-pointer block py-2.5 px-4 rounded transition duration-200 ${
+              pathname === "/alumnos"
+                ? "bg-gray-700 text-white"
+                : "text-gray-300 hover:bg-gray-700 hover:text-white"
+            }`}
+          >
+            Alumnos
+          </div>
+        </Link>
+        <Link href="/grupos" passHref>
+          <div
+            className={`cursor-pointer block py-2.5 px-4 rounded transition duration-200 ${
+              pathname === "/grupos"
+                ? "bg-gray-700 text-white"
+                : "text-gray-300 hover:bg-gray-700 hover:text-white"
+            }`}
+          >
+            Grupos
+          </div>
+        </Link>
       </nav>
     </div>
   );
