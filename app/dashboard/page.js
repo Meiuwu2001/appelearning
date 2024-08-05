@@ -5,14 +5,17 @@ import Link from "next/link";
 import Sidebar from "../components/Sidebar";
 import ProtectedRoute from "../components/ProtectedRoute";
 import Navbar from "../components/Navbar";
-import ModalJoinClass from "../components/ModalJoinClass"; // Asegúrate de que la ruta sea correcta
-import ModalCreateClass from "../components/ModalCreateClass"; // Asegúrate de que la ruta sea correcta
+import ModalJoinClass from "../components/ModalJoinClass";
+import ModalCreateClass from "../components/ModalCreateClass";
+import axios from "axios";
 
 const Dashboard = () => {
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
   const [role, setRole] = useState('');
   const [showJoinClassModal, setShowJoinClassModal] = useState(false);
   const [showCreateClassModal, setShowCreateClassModal] = useState(false);
+  const [className, setClassName] = useState('');
+  const [classDescription, setClassDescription] = useState('');
 
   useEffect(() => {
     const storedRole = localStorage.getItem('role');
@@ -25,11 +28,34 @@ const Dashboard = () => {
     setShowJoinClassModal(false);
   };
 
-  const handleCreateClass = (e) => {
+  const handleCreateClass = async (e) => {
     e.preventDefault();
-    // Maneja la creación de clase aquí
-    setShowCreateClassModal(false);
+    try {
+      const id_docente = localStorage.getItem('iddoc');
+      const data = {
+        titulo: className,
+        descripcion: classDescription,
+        id_docente
+      };
+  
+      // Enviar la solicitud POST al backend para crear la clase
+      const response = await axios.post('/api/grupos', data);
+  
+      if (response.status === 200) {
+        console.log("Clase creada exitosamente:", response.data);
+        // Restablecer los campos del formulario
+        setClassName('');
+        setClassDescription('');
+        // Cerrar el modal
+        setShowCreateClassModal(false);
+      } else {
+        console.error("Error al crear la clase:", response.data);
+      }
+    } catch (error) {
+      console.error("Error al crear la clase:", error);
+    }
   };
+  
 
   return (
     <ProtectedRoute>
@@ -52,7 +78,6 @@ const Dashboard = () => {
                 >
                   Unirse a Clase
                 </button>
-                {/* Modal para ingresar código de clase */}
                 <ModalJoinClass
                   show={showJoinClassModal}
                   onClose={() => setShowJoinClassModal(false)}
@@ -76,7 +101,6 @@ const Dashboard = () => {
                     </button>
                   </form>
                 </ModalJoinClass>
-                {/* Tarjetas de clases */}
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                   <div className="bg-white border rounded p-4">
                     <h2 className="text-lg font-bold mb-2">Clase 1</h2>
@@ -101,7 +125,6 @@ const Dashboard = () => {
                 >
                   Crear Clase
                 </button>
-                {/* Modal para crear una clase */}
                 <ModalCreateClass
                   show={showCreateClassModal}
                   onClose={() => setShowCreateClassModal(false)}
@@ -114,6 +137,8 @@ const Dashboard = () => {
                         type="text"
                         name="className"
                         className="border p-2 w-full"
+                        value={className}
+                        onChange={(e) => setClassName(e.target.value)}
                         required
                       />
                     </label>
@@ -122,6 +147,8 @@ const Dashboard = () => {
                       <textarea
                         name="classDescription"
                         className="border p-2 w-full"
+                        value={classDescription}
+                        onChange={(e) => setClassDescription(e.target.value)}
                         required
                       />
                     </label>
@@ -133,7 +160,6 @@ const Dashboard = () => {
                     </button>
                   </form>
                 </ModalCreateClass>
-                {/* Tarjetas de clases */}
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                   <div className="bg-white border rounded p-4">
                     <h2 className="text-lg font-bold mb-2">Clase A</h2>

@@ -16,12 +16,15 @@ export async function GET() {
 
 export async function POST(request) {
   try {
-    const { nombre, apellidos, id_grupo } = JSON.parse(await request.text());
+    const { nombre, apellidos, matricula, fechaNacimiento } = JSON.parse(
+      await request.text()
+    );
 
     const result = await db.query("INSERT INTO alumnos SET ?", {
       nombre,
       apellidos,
-      id_grupo,
+      matricula,
+      fechaNacimiento,
     });
     const newId = result.insertId;
     console.log(result);

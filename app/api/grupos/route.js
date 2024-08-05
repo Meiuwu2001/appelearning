@@ -13,15 +13,39 @@ export async function GET() {
     );
   }
 }
+
 export async function POST(request) {
   try {
-    const { grado_grupo } = await request.json();
+    const { titulo, descripcion, id_docente } = await request.json();
+    
+    // Generación del código de clase
+    function generateClassCode(length) {
+      const characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+      let code = "";
+      for (let i = 0; i < length; i++) {
+        const randomIndex = Math.floor(Math.random() * characters.length);
+        code += characters[randomIndex];
+      }
+      return code;
+    }
+    
+    const codigo = generateClassCode(5);
 
-    // Realiza la operación de inserción
-    const result = await db.query("INSERT INTO grupo SET ?", { grado_grupo });
+    // Inserta un nuevo grupo en la tabla "grupo"
+    const [result] = await db.query("INSERT INTO grupo SET ?", {
+      titulo,
+      descripcion,
+      codigo,
+    });
 
     // Obtiene el nuevo idgrupo generado
     const newId = result.insertId;
+
+    // Inserta la relación en la tabla "docente_grupo"
+    await db.query("INSERT INTO docentes_has_grupo SET ?", {
+      docentes_id: id_docente,
+      grupo_idgrupo: newId,
+    });
 
     // Devuelve una respuesta de éxito junto con el nuevo idgrupo
     return NextResponse.json({

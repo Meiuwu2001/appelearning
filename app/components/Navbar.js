@@ -8,7 +8,8 @@ import { FaSignOutAlt } from "react-icons/fa";
 const Navbar = () => {
   const [username, setUsername] = useState("");
   const router = useRouter();
-
+  let iddoc;
+  let idalumn;
   useEffect(() => {
     fetchUser();
   }, []);
@@ -26,6 +27,8 @@ const Navbar = () => {
           setUsername(
             `${response.data.message[0].nombre} ${response.data.message[0].apellidos}`
           );
+          idalumn = response.data.message[0].id;
+          localStorage.setItem("idalumn", idalumn);
         }
       } else if (role === "docente") {
         if (userId) {
@@ -36,6 +39,8 @@ const Navbar = () => {
           setUsername(
             `${response.data.message[0].nombre} ${response.data.message[0].apellidos}`
           );
+          iddoc = response.data.message[0].id;
+          localStorage.setItem("iddoc", iddoc);
         }
       }
     } catch (error) {
