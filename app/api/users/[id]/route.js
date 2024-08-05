@@ -1,5 +1,7 @@
 import { NextResponse } from "next/server";
 import db from "@/libs/db";
+import bcrypt from "bcryptjs";
+
 export async function GET(request, { params }) {
   try {
     const [rows] = await db.query("SELECT * FROM users WHERE id = ?", [
@@ -51,6 +53,13 @@ export async function DELETE(request, { params }) {
 export async function PUT(request, { params }) {
   try {
     const data = await request.json();
+
+    // Solo hashear la contraseña si está presente en los datos
+    if (data.password) {
+      const salt = await bcrypt.genSalt(10); // Generar salt con 10 rondas
+      data.password = await bcrypt.hash(data.password, salt); // Hashear la contraseña
+    }
+
     const result = await db.query("UPDATE users SET ? WHERE id=?", [
       data,
       params.id,

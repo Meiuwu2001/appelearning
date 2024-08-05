@@ -1,6 +1,6 @@
-// pages/api/users.js
 import { NextResponse } from "next/server";
 import db from "@/libs/db";
+import bcrypt from "bcryptjs";
 
 /**
  * This function handles GET requests to the API endpoint.
@@ -52,8 +52,12 @@ export async function POST(request) {
       );
     }
 
+    // Hash the password
+    const salt = await bcrypt.genSalt(10); // Generate a salt with 10 rounds
+    const hashedPassword = await bcrypt.hash(password, salt);
+
     // Perform the database operation
-    const result = await db.query("INSERT INTO users (user, password, role) VALUES (?, ?, ?)", [user, password, role]);
+    const result = await db.query("INSERT INTO users (user, password, role) VALUES (?, ?, ?)", [user, hashedPassword, role]);
 
     // Return a success response
     return NextResponse.json({
