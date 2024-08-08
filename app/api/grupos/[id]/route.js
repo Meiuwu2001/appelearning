@@ -12,8 +12,7 @@ export async function GET(request, { params }) {
       );
     }
     return NextResponse.json({
-      message: rows,
-      status: 200,
+      rows,
     });
   } catch (error) {
     return NextResponse.json(

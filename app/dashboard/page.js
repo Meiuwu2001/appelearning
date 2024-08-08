@@ -31,6 +31,7 @@ const Dashboard = () => {
 
   const fetchStudentClasses = async () => {
     const idalum = localStorage.getItem("idalumn");
+    console.log(idalum);
     try {
       const response = await axios.get(`/api/alumnos_has_grupo/${idalum}`);
       if (Array.isArray(response.data)) {
@@ -154,10 +155,14 @@ const Dashboard = () => {
                 </ModalJoinClass>
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                   {classes.map((clase) => (
-                    <div key={clase.id} className="bg-white border rounded p-4">
-                      <h2 className="text-lg font-bold mb-2">{clase.titulo}</h2>
-                      <p>{clase.descripcion}</p>
-                    </div>
+                    <Link href={`/Tareas/${clase.idgrupo}`} key={clase.idgrupo}>
+                      <div className="bg-white border rounded p-4 cursor-pointer">
+                        <h2 className="text-lg font-bold mb-2">
+                          {clase.titulo}
+                        </h2>
+                        <p>{clase.descripcion}</p>
+                      </div>
+                    </Link>
                   ))}
                 </div>
               </div>
@@ -207,31 +212,40 @@ const Dashboard = () => {
                 </ModalCreateClass>
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                   {classes.map((clase) => (
-                    <div key={clase.id} className="bg-white border rounded p-4">
-                      <h2 className="text-lg font-bold mb-2">{clase.titulo}</h2>
-                      <p>{clase.descripcion}</p>
-                      <p className="text-sm text-gray-500">
-                        Código: {clase.codigo}
-                      </p>
-                    </div>
+                    <Link href={`/Tareas/${clase.idgrupo}`} key={clase.idgrupo}>
+                      <div className="bg-white border rounded p-4 cursor-pointer">
+                        <h2 className="text-lg font-bold mb-2">
+                          {clase.titulo}
+                        </h2>
+                        <p>{clase.descripcion}</p>
+                        <p className="text-sm text-gray-500">
+                          Código: {clase.codigo}
+                        </p>
+                      </div>
+                    </Link>
                   ))}
                 </div>
               </div>
             ) : (
-              <div className="space-y-4">
+              <div className="flex flex-col items-center space-y-4 text-center px-4 pt-10">
                 <h1 className="text-2xl font-bold mb-4">
                   Bienvenido al Dashboard
                 </h1>
                 <p className="mb-4">Has iniciado sesión correctamente.</p>
-                <div className="space-y-4">
+                <div>
                   <Link href="/admin" legacyBehavior>
-                    <a className="px-4 py-2 bg-blue-500 text-white rounded">
+                    <a className="block px-4 py-2 bg-blue-500 text-white rounded mb-4">
                       Administrar Usuarios
                     </a>
                   </Link>
-                  <Link href="/tasks" legacyBehavior>
-                    <a className="px-4 py-2 bg-blue-500 text-white rounded">
-                      Administrar Tareas
+                  <Link href="/docentes" legacyBehavior>
+                    <a className="block px-4 py-2 bg-blue-500 text-white rounded mb-4">
+                      Administrar Docentes
+                    </a>
+                  </Link>
+                  <Link href="/alumnos" legacyBehavior>
+                    <a className="block px-4 py-2 bg-blue-500 text-white rounded">
+                      Administrar Alumnos
                     </a>
                   </Link>
                 </div>

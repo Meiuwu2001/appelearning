@@ -2,19 +2,24 @@ import { NextResponse } from "next/server";
 import db from "@/libs/db";
 export async function GET(request, { params }) {
   try {
-    const [rows] = await db.query("SELECT * FROM tareas WHERE id = ?", [
-      params.id,
-    ]);
-    if (rows.length === 0) {
-      return NextResponse.json(
-        { message: "Tarea no encontrado" },
-        { status: 404 }
+    if (params.id.length > 0) {
+      const [rows] = await db.query(
+        "SELECT * FROM tareas WHERE grupo_idgrupo = ?",
+        [params.id]
       );
+      if (rows.length === 0) {
+        return NextResponse.json({
+          message: "no hay tareas aqui",
+        });
+      }
+      return NextResponse.json({
+        rows,
+      });
+    } else {
+      return NextResponse.json({
+        message: "no hay tareas aqui",
+      });
     }
-    return NextResponse.json({
-      message: rows,
-      status: 200,
-    });
   } catch (error) {
     return NextResponse.json(
       {
@@ -24,6 +29,7 @@ export async function GET(request, { params }) {
     );
   }
 }
+
 export async function DELETE(request, { params }) {
   // Implementación de la función DELETE
   try {
