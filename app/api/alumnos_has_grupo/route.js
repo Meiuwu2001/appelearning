@@ -1,7 +1,6 @@
 import { NextResponse } from "next/server";
 import db from "@/libs/db"; // Asegúrate de tener tu conexión a la base de datos en lib/db
 
-
 export async function POST(request) {
   try {
     const { codigo, alumnos_id } = await request.json();
@@ -30,5 +29,7 @@ export async function POST(request) {
       { error: "Error querying the database" },
       { status: 500 }
     );
+  } finally {
+    connection.release(); // Release the connection back to the pool
   }
 }

@@ -22,5 +22,7 @@ export async function GET(request, { params }) {
       },
       { status: 500 }
     );
+  } finally {
+    connection.release(); // Release the connection back to the pool
   }
 }

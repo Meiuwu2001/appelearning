@@ -22,6 +22,8 @@ export async function GET(request, { params }) {
       },
       { status: 500 }
     );
+  } finally {
+    connection.release(); // Release the connection back to the pool
   }
 }
 export async function DELETE(request, { params }) {
@@ -48,6 +50,8 @@ export async function DELETE(request, { params }) {
       },
       { status: 500 }
     );
+  } finally {
+    connection.release(); // Release the connection back to the pool
   }
 }
 
@@ -75,5 +79,7 @@ export async function PUT(request, { params }) {
     });
   } catch (error) {
     return NextResponse.json({ message: error.message }, { status: 500 });
+  } finally {
+    connection.release(); // Release the connection back to the pool
   }
 }

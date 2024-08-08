@@ -57,7 +57,10 @@ export async function POST(request) {
     const hashedPassword = await bcrypt.hash(password, salt);
 
     // Perform the database operation
-    const result = await db.query("INSERT INTO users (user, password, role) VALUES (?, ?, ?)", [user, hashedPassword, role]);
+    const result = await db.query(
+      "INSERT INTO users (user, password, role) VALUES (?, ?, ?)",
+      [user, hashedPassword, role]
+    );
 
     // Return a success response
     return NextResponse.json({
@@ -70,5 +73,7 @@ export async function POST(request) {
       { error: "Error querying the database" },
       { status: 500 }
     );
+  } finally {
+    connection.release(); // Release the connection back to the pool
   }
 }

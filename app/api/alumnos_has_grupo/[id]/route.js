@@ -10,12 +10,14 @@ export async function GET(request, { params }) {
     );
 
     // Return the result
-    return NextResponse.json( rows );
+    return NextResponse.json(rows);
   } catch (error) {
     console.error("Error querying the database:", error);
     return NextResponse.json(
       { error: "Error querying the database" },
       { status: 500 }
     );
+  } finally {
+    connection.release(); // Release the connection back to the pool
   }
 }

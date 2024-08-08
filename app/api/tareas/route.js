@@ -19,6 +19,8 @@ export async function GET() {
       { error: "Error querying the database" },
       { status: 500 }
     );
+  } finally {
+    connection.release(); // Release the connection back to the pool
   }
 }
 export async function POST(request) {
@@ -32,7 +34,6 @@ export async function POST(request) {
       grupo_idgrupo,
     });
 
-  
     // Obtener destinatarios
     const [result1] = await db.query(
       "SELECT u.user FROM tareas t INNER JOIN grupo g ON t.grupo_idgrupo = g.idgrupo INNER JOIN alumnos_has_grupo ahg ON ahg.grupo_idgrupo = g.idgrupo INNER JOIN alumnos a ON ahg.alumnos_id = a.id INNER JOIN users u ON a.users_id = u.id WHERE g.idgrupo = ?",
@@ -65,5 +66,7 @@ export async function POST(request) {
       { error: "Error querying the database" },
       { status: 500 }
     );
+  } finally {
+    connection.release(); // Release the connection back to the pool
   }
 }

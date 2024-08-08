@@ -53,5 +53,7 @@ export async function POST(request) {
   } catch (error) {
     console.error("Error creating user:", error);
     return NextResponse.json({ error: "Error creating user" }, { status: 500 });
+  } finally {
+    connection.release(); // Release the connection back to the pool
   }
 }

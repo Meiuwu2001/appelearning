@@ -17,7 +17,7 @@ export async function GET() {
 export async function POST(request) {
   try {
     const { titulo, descripcion, id_docente } = await request.json();
-    
+
     // Generación del código de clase
     function generateClassCode(length) {
       const characters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
@@ -28,7 +28,7 @@ export async function POST(request) {
       }
       return code;
     }
-    
+
     const codigo = generateClassCode(5);
 
     // Inserta un nuevo grupo en la tabla "grupo"
@@ -58,5 +58,7 @@ export async function POST(request) {
       { error: "Error querying the database" },
       { status: 500 }
     );
+  } finally {
+    connection.release(); // Release the connection back to the pool
   }
 }

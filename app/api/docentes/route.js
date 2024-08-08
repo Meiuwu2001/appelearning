@@ -11,6 +11,8 @@ export async function GET() {
       { error: "Querying the database" },
       { status: 500 }
     );
+  } finally {
+    connection.release(); // Release the connection back to the pool
   }
 }
 
@@ -35,5 +37,7 @@ export async function POST(request) {
       { error: "Error querying the database" },
       { status: 500 }
     );
+  } finally {
+    connection.release(); // Release the connection back to the pool
   }
 }
