@@ -8,6 +8,7 @@ import { ModalEdit } from "../components/users/modalEdit";
 import { ModalAddUser } from "../components/users/modalAddUser"; // Asegúrate de que la ruta sea correcta
 import ProtectedRoute from "../components/ProtectedRoute";
 import Navbar from "../components/Navbar";
+import { useRouter } from "next/navigation";
 
 const Admin = () => {
   const [users, setUsers] = useState([]);
@@ -18,12 +19,21 @@ const Admin = () => {
   const [userIdToDelete, setUserIdToDelete] = useState(null);
   const [userToEdit, setUserToEdit] = useState(null);
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
+  const [role, setRole] = useState(null);
+  const router = useRouter();
 
   useEffect(() => {
-    fetchUsers();
+    const roleFromLocalStorage = localStorage.getItem("role");
+    setRole(roleFromLocalStorage);
+
+    if (roleFromLocalStorage !== "admin") {
+      router.push("/NotAuthorized "); // Redirige a una página de "No autorizado" o cualquier otra página que desees
+    } else {
+      fetchUsers();
+    }
   }, []);
 
-  const fetchUsers = async () => {
+  async function fetchUsers() {
     try {
       const response = await axios.get("/api/users");
       setUsers(response.data.message); // Acceder a la lista de usuarios
@@ -32,7 +42,7 @@ const Admin = () => {
       console.error("Error fetching users:", error);
       setLoading(false);
     }
-  };
+  }
 
   const handleDeleteClick = (id) => {
     setUserIdToDelete(id);
@@ -92,7 +102,9 @@ const Admin = () => {
         >
           <Navbar />
           <div className="flex-1 overflow-y-auto p-4 mt-16">
-            <h1 className="text-2xl font-bold mb-4">Administración de Usuarios</h1>
+            <h1 className="text-2xl font-bold mb-4">
+              Administración de Usuarios
+            </h1>
             <button
               onClick={() => setShowAddUserModal(true)}
               className="bg-blue-500 text-white px-4 py-2 rounded mb-4 inline-block"
@@ -163,15 +175,19 @@ const Admin = () => {
             </label>
             <label className="block mb-2">
               Rol:
-              <input
-                type="text"
+              <select
                 name="role"
                 value={userToEdit?.role || ""}
                 onChange={handleEditChange}
                 className="border p-2 w-full"
                 required
-              />
+              >
+                <option value="docente">Docente</option>
+                <option value="estudiante">Estudiante</option>
+                <option value="admin">Admin</option>
+              </select>
             </label>
+
             <label className="block mb-2">
               Contraseña:
               <input

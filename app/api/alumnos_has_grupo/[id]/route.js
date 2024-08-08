@@ -1,11 +1,11 @@
 import { NextResponse } from "next/server";
-import db from "@/libs/db";
+import db from "@/libs/db"; // Asegúrate de tener tu conexión a la base de datos en lib/db
 
 export async function GET(request, { params }) {
   try {
     // Perform the query
     const [rows] = await db.query(
-      "SELECT * FROM docentes d INNER JOIN docentes_has_grupo dhg ON d.id =dhg.docentes_id INNER JOIN grupo g ON grupo_idgrupo = g.idgrupo ",
+      "SELECT * FROM alumnos a INNER JOIN alumnos_has_grupo ahg ON a.id = ahg.alumnos_id INNER JOIN grupo g ON grupo_idgrupo = g.idgrupo WHERE a.id = ?",
       [params.id]
     );
 

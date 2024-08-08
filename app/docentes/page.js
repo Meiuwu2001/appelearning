@@ -8,6 +8,7 @@ import Modal from "../components/docentes/modalDelete";
 import { ModalEdit } from "../components/docentes/modalEdit";
 import ProtectedRoute from "../components/ProtectedRoute";
 import Navbar from "../components/Navbar";
+import { useRouter } from "next/navigation";
 
 const Docentes = () => {
   const [docentes, setDocentes] = useState([]);
@@ -18,9 +19,17 @@ const Docentes = () => {
   const [docenteIdToDelete, setDocenteIdToDelete] = useState(null);
   const [docenteToEdit, setDocenteToEdit] = useState(null);
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
-
+  const [role, setRole] = useState(null);
+  const router = useRouter();
   useEffect(() => {
-    fetchDocentes();
+    const roleFromLocalStorage = localStorage.getItem("role");
+    setRole(roleFromLocalStorage);
+
+    if (roleFromLocalStorage !== "admin") {
+      router.push("/NotAuthorized "); // Redirige a una página de "No autorizado" o cualquier otra página que desees
+    } else {
+      fetchDocentes();
+    }
   }, []);
 
   const fetchDocentes = async () => {

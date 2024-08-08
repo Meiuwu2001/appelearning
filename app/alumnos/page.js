@@ -8,6 +8,7 @@ import { ModalEdit } from "../components/alumnos/modalEdit";
 import { ModalAddAlumno } from "../components/alumnos/ModalAddAlumno";
 import ProtectedRoute from "../components/ProtectedRoute";
 import Navbar from "../components/Navbar";
+import { useRouter } from "next/navigation";
 
 const Alumnos = () => {
   const [alumnos, setAlumnos] = useState([]);
@@ -18,9 +19,17 @@ const Alumnos = () => {
   const [alumnoIdToDelete, setAlumnoIdToDelete] = useState(null);
   const [alumnoToEdit, setAlumnoToEdit] = useState(null);
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
-
+  const [role, setRole] = useState(null);
+  const router = useRouter();
   useEffect(() => {
-    fetchAlumnos();
+    const roleFromLocalStorage = localStorage.getItem("role");
+    setRole(roleFromLocalStorage);
+
+    if (roleFromLocalStorage === "estudiante") {
+      router.push("/NotAuthorized "); // Redirige a una página de "No autorizado" o cualquier otra página que desees
+    } else {
+      fetchAlumnos();
+    }
   }, []);
 
   const fetchAlumnos = async () => {
@@ -92,7 +101,9 @@ const Alumnos = () => {
         >
           <Navbar />
           <div className="flex-1 overflow-y-auto p-4 mt-16">
-            <h1 className="text-2xl font-bold mb-4">Administración de Alumnos</h1>
+            <h1 className="text-2xl font-bold mb-4">
+              Administración de Alumnos
+            </h1>
             <button
               onClick={() => setShowAddAlumnoModal(true)}
               className="bg-blue-500 text-white px-4 py-2 rounded mb-4 inline-block"

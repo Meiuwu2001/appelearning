@@ -22,7 +22,7 @@ export const ModalAddAlumno = ({ isOpen, onClose, onAlumnoAdded }) => {
         matricula,
         fechaNacimiento,
       });
-      onAlumnoAdded();
+      onAlumnoAdded();  
       onClose();
     } catch (error) {
       console.error("Error al añadir el alumno:", error);

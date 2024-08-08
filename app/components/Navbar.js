@@ -8,6 +8,7 @@ import { FaSignOutAlt } from "react-icons/fa";
 const Navbar = () => {
   const [username, setUsername] = useState("");
   const router = useRouter();
+  const role = localStorage.getItem("role");
   let iddoc;
   let idalumn;
   useEffect(() => {
@@ -17,7 +18,8 @@ const Navbar = () => {
   const fetchUser = async () => {
     try {
       const userId = localStorage.getItem("userId");
-      const role = localStorage.getItem("role");
+      
+
       if (role === "estudiante") {
         if (userId) {
           // Simulación de consulta a la API para obtener el nombre del usuario
@@ -65,7 +67,7 @@ const Navbar = () => {
       <div className="text-lg font-bold"></div>
       <div className="flex items-center">
         {username && (
-          <span className="mr-4 text-sm">{`Hola, ${username}`}</span>
+          <span className="mr-4 text-sm">{`Hola, ${username} (${role})`}</span>
         )}
         <button
           onClick={handleLogout}

@@ -11,43 +11,94 @@ import axios from "axios";
 
 const Dashboard = () => {
   const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
-  const [role, setRole] = useState('');
+  const [role, setRole] = useState("");
   const [showJoinClassModal, setShowJoinClassModal] = useState(false);
   const [showCreateClassModal, setShowCreateClassModal] = useState(false);
-  const [className, setClassName] = useState('');
-  const [classDescription, setClassDescription] = useState('');
+  const [className, setClassName] = useState("");
+  const [classDescription, setClassDescription] = useState("");
+  const [classCode, setClassCode] = useState("");
+  const [classes, setClasses] = useState([]);
+  const storedRole = localStorage.getItem("role");
 
   useEffect(() => {
-    const storedRole = localStorage.getItem('role');
-    setRole(storedRole || '');
-  }, []);
+    setRole(storedRole);
+    if (storedRole === "estudiante") {
+      fetchStudentClasses();
+    } else if (storedRole === "docente") {
+      fetchTeacherClasses();
+    }
+  }, [storedRole]);
 
-  const handleJoinClass = (e) => {
+  const fetchStudentClasses = async () => {
+    const idalum = localStorage.getItem("idalumn");
+    try {
+      const response = await axios.get(`/api/alumnos_has_grupo/${idalum}`);
+      if (Array.isArray(response.data)) {
+        setClasses(response.data);
+      } else {
+        setClasses([]);
+      }
+    } catch (error) {
+      console.error("Error fetching student classes:", error);
+    }
+  };
+
+  const fetchTeacherClasses = async () => {
+    const iddoc = localStorage.getItem("iddoc");
+    try {
+      const response = await axios.get(`/api/docentes_has_grupo/${iddoc}`);
+      if (Array.isArray(response.data)) {
+        setClasses(response.data);
+      } else {
+        setClasses([]);
+      }
+    } catch (error) {
+      console.error("Error fetching teacher classes:", error);
+    }
+  };
+
+  const handleJoinClass = async (e) => {
     e.preventDefault();
-    // Maneja el unirse a clase aquí
-    setShowJoinClassModal(false);
+    try {
+      const idAlumno = localStorage.getItem("idalumn");
+      const data = {
+        codigo: classCode,
+        alumnos_id: idAlumno,
+      };
+
+      const response = await axios.post("/api/alumnos_has_grupo", data);
+
+      if (response.status === 200) {
+        console.log("Se unió a la clase exitosamente:", response.data);
+        setClassCode("");
+        setShowJoinClassModal(false);
+        fetchStudentClasses();
+      } else {
+        console.error("Error al unirse a la clase:", response.data);
+      }
+    } catch (error) {
+      console.error("Error al unirse a la clase:", error);
+    }
   };
 
   const handleCreateClass = async (e) => {
     e.preventDefault();
     try {
-      const id_docente = localStorage.getItem('iddoc');
+      const id_docente = localStorage.getItem("iddoc");
       const data = {
         titulo: className,
         descripcion: classDescription,
-        id_docente
+        id_docente,
       };
-  
-      // Enviar la solicitud POST al backend para crear la clase
-      const response = await axios.post('/api/grupos', data);
-  
+
+      const response = await axios.post("/api/grupos", data);
+
       if (response.status === 200) {
         console.log("Clase creada exitosamente:", response.data);
-        // Restablecer los campos del formulario
-        setClassName('');
-        setClassDescription('');
-        // Cerrar el modal
+        setClassName("");
+        setClassDescription("");
         setShowCreateClassModal(false);
+        fetchTeacherClasses();
       } else {
         console.error("Error al crear la clase:", response.data);
       }
@@ -55,7 +106,6 @@ const Dashboard = () => {
       console.error("Error al crear la clase:", error);
     }
   };
-  
 
   return (
     <ProtectedRoute>
@@ -68,8 +118,7 @@ const Dashboard = () => {
         >
           <Navbar />
           <div className="flex-1 overflow-y-auto p-4 mt-16">
-            {/* Contenido basado en el rol */}
-            {role === 'estudiante' ? (
+            {role === "estudiante" ? (
               <div className="space-y-4">
                 <h1 className="text-2xl font-bold mb-4">Mis Clases</h1>
                 <button
@@ -90,6 +139,8 @@ const Dashboard = () => {
                         type="text"
                         name="classCode"
                         className="border p-2 w-full"
+                        value={classCode}
+                        onChange={(e) => setClassCode(e.target.value)}
                         required
                       />
                     </label>
@@ -102,21 +153,15 @@ const Dashboard = () => {
                   </form>
                 </ModalJoinClass>
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                  <div className="bg-white border rounded p-4">
-                    <h2 className="text-lg font-bold mb-2">Clase 1</h2>
-                    <p>Descripción de la Clase 1.</p>
-                  </div>
-                  <div className="bg-white border rounded p-4">
-                    <h2 className="text-lg font-bold mb-2">Clase 2</h2>
-                    <p>Descripción de la Clase 2.</p>
-                  </div>
-                  <div className="bg-white border rounded p-4">
-                    <h2 className="text-lg font-bold mb-2">Clase 3</h2>
-                    <p>Descripción de la Clase 3.</p>
-                  </div>
+                  {classes.map((clase) => (
+                    <div key={clase.id} className="bg-white border rounded p-4">
+                      <h2 className="text-lg font-bold mb-2">{clase.titulo}</h2>
+                      <p>{clase.descripcion}</p>
+                    </div>
+                  ))}
                 </div>
               </div>
-            ) : role === 'docente' ? (
+            ) : role === "docente" ? (
               <div className="space-y-4">
                 <h1 className="text-2xl font-bold mb-4">Mis Clases</h1>
                 <button
@@ -161,23 +206,22 @@ const Dashboard = () => {
                   </form>
                 </ModalCreateClass>
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                  <div className="bg-white border rounded p-4">
-                    <h2 className="text-lg font-bold mb-2">Clase A</h2>
-                    <p>Descripción de la Clase A.</p>
-                  </div>
-                  <div className="bg-white border rounded p-4">
-                    <h2 className="text-lg font-bold mb-2">Clase B</h2>
-                    <p>Descripción de la Clase B.</p>
-                  </div>
-                  <div className="bg-white border rounded p-4">
-                    <h2 className="text-lg font-bold mb-2">Clase C</h2>
-                    <p>Descripción de la Clase C.</p>
-                  </div>
+                  {classes.map((clase) => (
+                    <div key={clase.id} className="bg-white border rounded p-4">
+                      <h2 className="text-lg font-bold mb-2">{clase.titulo}</h2>
+                      <p>{clase.descripcion}</p>
+                      <p className="text-sm text-gray-500">
+                        Código: {clase.codigo}
+                      </p>
+                    </div>
+                  ))}
                 </div>
               </div>
             ) : (
               <div className="space-y-4">
-                <h1 className="text-2xl font-bold mb-4">Bienvenido al Dashboard</h1>
+                <h1 className="text-2xl font-bold mb-4">
+                  Bienvenido al Dashboard
+                </h1>
                 <p className="mb-4">Has iniciado sesión correctamente.</p>
                 <div className="space-y-4">
                   <Link href="/admin" legacyBehavior>
