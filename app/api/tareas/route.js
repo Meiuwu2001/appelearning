@@ -2,12 +2,13 @@ import { NextResponse } from "next/server";
 import db from "@/libs/db";
 import { EmailTemplate } from "@/app/components/email-template";
 import { Resend } from "resend";
+const connection = await db.getConnection();
 
 const resend = new Resend("re_NcZJ369s_DZCogdyXVZdvdddk4iojj9zv");
 
 export async function GET() {
   try {
-    const [rows] = await db.query("SELECT * FROM tareas");
+    const [rows] = await connection.query("SELECT * FROM tareas");
 
     return NextResponse.json({
       message: rows,
@@ -20,7 +21,7 @@ export async function GET() {
       { status: 500 }
     );
   } finally {
-    connection.release(); // Release the connection back to the pool
+    connection.release(); // Release the db back to the pool
   }
 }
 export async function POST(request) {
@@ -28,14 +29,14 @@ export async function POST(request) {
     const { titulo, descripcion, grupo_idgrupo } = await request.json();
 
     // Insertar tarea en la base de datos
-    const result = await db.query("INSERT INTO tareas SET ?", {
+    const result = await connection.query("INSERT INTO tareas SET ?", {
       titulo,
       descripcion,
       grupo_idgrupo,
     });
 
     // Obtener destinatarios
-    const [result1] = await db.query(
+    const [result1] = await connection.query(
       "SELECT u.user FROM tareas t INNER JOIN grupo g ON t.grupo_idgrupo = g.idgrupo INNER JOIN alumnos_has_grupo ahg ON ahg.grupo_idgrupo = g.idgrupo INNER JOIN alumnos a ON ahg.alumnos_id = a.id INNER JOIN users u ON a.users_id = u.id WHERE g.idgrupo = ?",
       [grupo_idgrupo]
     );
@@ -67,6 +68,6 @@ export async function POST(request) {
       { status: 500 }
     );
   } finally {
-    connection.release(); // Release the connection back to the pool
+    connection.release(); // Release the db back to the pool
   }
 }

@@ -1,10 +1,14 @@
 import { NextResponse } from "next/server";
 import db from "@/libs/db";
+
+const connection = await db.getConnection();
+
 export async function GET(request, { params }) {
   try {
-    const [rows] = await db.query("SELECT * FROM alumnos WHERE id = ?", [
-      params.id,
-    ]);
+    const [rows] = await connection.query(
+      "SELECT * FROM alumnos a INNER JOIN alumnos_has_grupo ahg ON a.id = ahg.alumnos_id INNER JOIN grupo g ON g.idgrupo = ahg.grupo_idgrupo WHERE g.idgrupo = ?",
+      [params.id]
+    );
     if (rows.length === 0) {
       return NextResponse.json(
         { message: "Alumno no encontrado" },
@@ -12,8 +16,7 @@ export async function GET(request, { params }) {
       );
     }
     return NextResponse.json({
-      message: rows,
-      status: 200,
+      rows,
     });
   } catch (error) {
     return NextResponse.json(
@@ -23,13 +26,13 @@ export async function GET(request, { params }) {
       { status: 500 }
     );
   } finally {
-    connection.release(); // Release the connection back to the pool
+    connection.release(); // Release the db back to the pool
   }
 }
 export async function DELETE(request, { params }) {
   // Implementación de la función DELETE
   try {
-    const result = await db.query("DELETE FROM alumnos WHERE id= ?", [
+    const result = await connection.query("DELETE FROM alumnos WHERE id= ?", [
       params.id,
     ]);
     if (result.affectedRows === 0) {
@@ -51,14 +54,14 @@ export async function DELETE(request, { params }) {
       { status: 500 }
     );
   } finally {
-    connection.release(); // Release the connection back to the pool
+    connection.release(); // Release the db back to the pool
   }
 }
 
 export async function PUT(request, { params }) {
   try {
     const data = await request.json();
-    const result = await db.query("UPDATE alumnos SET ? WHERE id=?", [
+    const result = await connection.query("UPDATE alumnos SET ? WHERE id=?", [
       data,
       params.id,
     ]);
@@ -68,7 +71,7 @@ export async function PUT(request, { params }) {
         { status: 404 }
       );
     }
-    const [updatedProduct] = await db.query(
+    const [updatedProduct] = await connection.query(
       "SELECT * FROM alumnos WHERE id = ?",
       [params.id]
     );
@@ -80,6 +83,6 @@ export async function PUT(request, { params }) {
   } catch (error) {
     return NextResponse.json({ message: error.message }, { status: 500 });
   } finally {
-    connection.release(); // Release the connection back to the pool
+    connection.release(); // Release the db back to the pool
   }
 }

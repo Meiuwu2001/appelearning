@@ -1,10 +1,11 @@
 import { NextResponse } from "next/server";
 import db from "@/libs/db";
 import bcrypt from "bcryptjs";
+const connection = await db.getConnection();
 
 export async function GET(request, { params }) {
   try {
-    const [rows] = await db.query("SELECT * FROM users WHERE id = ?", [
+    const [rows] = await connection.query("SELECT * FROM users WHERE id = ?", [
       params.id,
     ]);
     if (rows.length === 0) {
@@ -25,13 +26,13 @@ export async function GET(request, { params }) {
       { status: 500 }
     );
   } finally {
-    connection.release(); // Release the connection back to the pool
+    connection.release(); // Release the db back to the pool
   }
 }
 export async function DELETE(request, { params }) {
   // Implementación de la función DELETE
   try {
-    const result = await db.query("DELETE FROM users WHERE id= ?", [params.id]);
+    const result = await connection.query("DELETE FROM users WHERE id= ?", [params.id]);
     if (result.affectedRows === 0) {
       return NextResponse.json(
         { message: "Usuario no encontrado" },
@@ -51,7 +52,7 @@ export async function DELETE(request, { params }) {
       { status: 500 }
     );
   } finally {
-    connection.release(); // Release the connection back to the pool
+    connection.release(); // Release the db back to the pool
   }
 }
 export async function PUT(request, { params }) {
@@ -64,7 +65,7 @@ export async function PUT(request, { params }) {
       data.password = await bcrypt.hash(data.password, salt); // Hashear la contraseña
     }
 
-    const result = await db.query("UPDATE users SET ? WHERE id=?", [
+    const result = await connection.query("UPDATE users SET ? WHERE id=?", [
       data,
       params.id,
     ]);
@@ -74,7 +75,7 @@ export async function PUT(request, { params }) {
         { status: 404 }
       );
     }
-    const [updatedProduct] = await db.query(
+    const [updatedProduct] = await connection.query(
       "SELECT * FROM users WHERE id = ?",
       [params.id]
     );
@@ -86,6 +87,6 @@ export async function PUT(request, { params }) {
   } catch (error) {
     return NextResponse.json({ message: error.message }, { status: 500 });
   } finally {
-    connection.release(); // Release the connection back to the pool
+    connection.release(); // Release the db back to the pool
   }
 }

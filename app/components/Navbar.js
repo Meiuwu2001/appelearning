@@ -9,46 +9,45 @@ const Navbar = () => {
   const [username, setUsername] = useState("");
   const router = useRouter();
   const role = localStorage.getItem("role");
-  let iddoc;
-  let idalumn;
+
   useEffect(() => {
-    fetchUser();
-  }, []);
+    const fetchUser = async () => {
+      try {
+        const userId = localStorage.getItem("userId");
 
-  const fetchUser = async () => {
-    try {
-      const userId = localStorage.getItem("userId");
-      
-
-      if (role === "estudiante") {
-        if (userId) {
-          // Simulación de consulta a la API para obtener el nombre del usuario
-          const response = await axios.get(
-            `/api/alumnos/alumnobydoc/${userId}`
-          );
-          setUsername(
-            `${response.data.message[0].nombre} ${response.data.message[0].apellidos}`
-          );
-          idalumn = response.data.message[0].id;
-          localStorage.setItem("idalumn", idalumn);
+        if (role === "estudiante") {
+          if (userId) {
+            // Simulación de consulta a la API para obtener el nombre del usuario
+            const response = await axios.get(
+              `/api/alumnos/alumnobydoc/${userId}`
+            );
+            setUsername(
+              `${response.data.message[0].nombre} ${response.data.message[0].apellidos}`
+            );
+            const idalumn = response.data.message[0].id;
+            localStorage.setItem("idalumn", idalumn);
+          }
+        } else if (role === "docente") {
+          if (userId) {
+            // Simulación de consulta a la API para obtener el nombre del usuario
+            const response = await axios.get(
+              `/api/docentes/docentesbydoc/${userId}`
+            );
+            setUsername(
+              `${response.data.message[0].nombre} ${response.data.message[0].apellidos}`
+            );
+            const iddoc = response.data.message[0].id;
+            localStorage.setItem("iddoc", iddoc);
+       
+          }
         }
-      } else if (role === "docente") {
-        if (userId) {
-          // Simulación de consulta a la API para obtener el nombre del usuario
-          const response = await axios.get(
-            `/api/docentes/docentesbydoc/${userId}`
-          );
-          setUsername(
-            `${response.data.message[0].nombre} ${response.data.message[0].apellidos}`
-          );
-          iddoc = response.data.message[0].id;
-          localStorage.setItem("iddoc", iddoc);
-        }
+      } catch (error) {
+        console.error("Error fetching user:", error);
       }
-    } catch (error) {
-      console.error("Error fetching user:", error);
-    }
-  };
+    };
+
+    fetchUser();
+  }, [role]); // Incluye `role` en el array de dependencias
 
   const handleLogout = async () => {
     try {

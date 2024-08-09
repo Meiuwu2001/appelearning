@@ -18,8 +18,9 @@ const db = mysql.createPool({
   database: database,
   port: port,
   waitForConnections: true,
-  connectionLimit: 0,
+  connectionLimit: 100,
   queueLimit: 0,
 });
 
 module.exports = db;
+

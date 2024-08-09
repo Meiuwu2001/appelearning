@@ -31,7 +31,7 @@ const Admin = () => {
     } else {
       fetchUsers();
     }
-  }, []);
+  }, [role, router]);
 
   async function fetchUsers() {
     try {

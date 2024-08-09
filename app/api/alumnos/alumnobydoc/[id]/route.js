@@ -1,8 +1,10 @@
 import { NextResponse } from "next/server";
 import db from "@/libs/db";
+const connection = await db.getConnection();
+
 export async function GET(request, { params }) {
   try {
-    const [rows] = await db.query("SELECT * FROM alumnos WHERE users_id = ?", [
+    const [rows] = await connection.query("SELECT * FROM alumnos WHERE users_id = ?", [
       params.id,
     ]);
     if (rows.length === 0) {
@@ -23,6 +25,6 @@ export async function GET(request, { params }) {
       { status: 500 }
     );
   } finally {
-    connection.release(); // Release the connection back to the pool
+    connection.release(); // Release the db back to the pool
   }
 }

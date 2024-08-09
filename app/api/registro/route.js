@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import db from "@/libs/db";
 import bcrypt from "bcryptjs";
+const connection = await db.getConnection();
 
 export async function POST(request) {
   const {
@@ -38,12 +39,12 @@ export async function POST(request) {
 
     // Insert the new user into the related tables (docentes, alumnos)
     if (role === "docente") {
-      await db.query(
+      await connection.query(
         "INSERT INTO docentes (nombre, apellidos, titulo, users_id) VALUES (?, ?, ?, ?)",
         [nombre, apellidos, titulo, newId]
       );
     } else if (role === "estudiante") {
-      await db.query(
+      await connection.query(
         "INSERT INTO alumnos (nombre, apellidos, matricula, fechaNacimiento, users_id) VALUES (?, ?, ?, ?, ?)",
         [nombre, apellidos, matricula, fechaNacimiento, newId]
       );
@@ -54,6 +55,6 @@ export async function POST(request) {
     console.error("Error creating user:", error);
     return NextResponse.json({ error: "Error creating user" }, { status: 500 });
   } finally {
-    connection.release(); // Release the connection back to the pool
+    connection.release(); // Release the db back to the pool
   }
 }

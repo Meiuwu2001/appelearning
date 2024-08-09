@@ -30,7 +30,7 @@ const Docentes = () => {
     } else {
       fetchDocentes();
     }
-  }, []);
+  }, [role, router]);
 
   const fetchDocentes = async () => {
     try {

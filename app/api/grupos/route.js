@@ -1,9 +1,10 @@
 import { NextResponse } from "next/server";
 import db from "@/libs/db";
+const connection = await db.getConnection();
 
 export async function GET() {
   try {
-    const [rows] = await db.query("SELECT * FROM grupo");
+    const [rows] = await connection.query("SELECT * FROM grupo");
     return NextResponse.json({ message: rows });
   } catch (error) {
     console.error("Error querying the database:", error);
@@ -32,7 +33,7 @@ export async function POST(request) {
     const codigo = generateClassCode(5);
 
     // Inserta un nuevo grupo en la tabla "grupo"
-    const [result] = await db.query("INSERT INTO grupo SET ?", {
+    const [result] = await connection.query("INSERT INTO grupo SET ?", {
       titulo,
       descripcion,
       codigo,
@@ -42,7 +43,7 @@ export async function POST(request) {
     const newId = result.insertId;
 
     // Inserta la relación en la tabla "docente_grupo"
-    await db.query("INSERT INTO docentes_has_grupo SET ?", {
+    await connection.query("INSERT INTO docentes_has_grupo SET ?", {
       docentes_id: id_docente,
       grupo_idgrupo: newId,
     });
@@ -59,6 +60,6 @@ export async function POST(request) {
       { status: 500 }
     );
   } finally {
-    connection.release(); // Release the connection back to the pool
+    connection.release(); // Release the db back to the pool
   }
 }

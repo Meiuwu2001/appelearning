@@ -1,11 +1,12 @@
 import { NextResponse } from "next/server";
 import db from "@/libs/db";
+const connection = await db.getConnection();
 
 export async function GET(request, { params }) {
   try {
     // Perform the query
-    const [rows] = await db.query(
-      "SELECT * FROM docentes d INNER JOIN docentes_has_grupo dhg ON d.id =dhg.docentes_id INNER JOIN grupo g ON grupo_idgrupo = g.idgrupo ",
+    const [rows] = await connection.query(
+      "SELECT * FROM docentes d INNER JOIN docentes_has_grupo dhg ON d.id =dhg.docentes_id INNER JOIN grupo g ON grupo_idgrupo = g.idgrupo WHERE d.id = ? ",
       [params.id]
     );
 
@@ -18,6 +19,6 @@ export async function GET(request, { params }) {
       { status: 500 }
     );
   } finally {
-    connection.release(); // Release the connection back to the pool
+    connection.release(); // Release the db back to the pool
   }
 }

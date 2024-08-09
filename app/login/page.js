@@ -22,7 +22,6 @@ const Login = () => {
 
       if (response.ok) {
         const data = await response.json();
-        console.log(data);
         const role = data.userRecord.role;
         const username = data.userRecord.user;
         const userId = data.userRecord.id;

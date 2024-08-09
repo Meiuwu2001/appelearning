@@ -1,9 +1,11 @@
 import { NextResponse } from "next/server";
 import db from "@/libs/db";
+const connection = await db.getConnection();
+
 export async function GET(request, { params }) {
   try {
     if (params.id.length > 0) {
-      const [rows] = await db.query(
+      const [rows] = await connection.query(
         "SELECT * FROM tareas WHERE grupo_idgrupo = ?",
         [params.id]
       );
@@ -28,14 +30,14 @@ export async function GET(request, { params }) {
       { status: 500 }
     );
   } finally {
-    connection.release(); // Release the connection back to the pool
+    connection.release(); // Release the db back to the pool
   }
 }
 
 export async function DELETE(request, { params }) {
   // Implementación de la función DELETE
   try {
-    const result = await db.query("DELETE FROM tareas WHERE id= ?", [
+    const result = await connection.query("DELETE FROM tareas WHERE id= ?", [
       params.id,
     ]);
     if (result.affectedRows === 0) {
@@ -57,13 +59,13 @@ export async function DELETE(request, { params }) {
       { status: 500 }
     );
   } finally {
-    connection.release(); // Release the connection back to the pool
+    connection.release(); // Release the db back to the pool
   }
 }
 export async function PUT(request, { params }) {
   try {
     const data = await request.json();
-    const result = await db.query("UPDATE tareas SET ? WHERE id=?", [
+    const result = await connection.query("UPDATE tareas SET ? WHERE id=?", [
       data,
       params.id,
     ]);
@@ -73,7 +75,7 @@ export async function PUT(request, { params }) {
         { status: 404 }
       );
     }
-    const [updatedProduct] = await db.query(
+    const [updatedProduct] = await connection.query(
       "SELECT * FROM tareas WHERE id = ?",
       [params.id]
     );
@@ -85,6 +87,6 @@ export async function PUT(request, { params }) {
   } catch (error) {
     return NextResponse.json({ message: error.message }, { status: 500 });
   } finally {
-    connection.release(); // Release the connection back to the pool
+    connection.release(); // Release the db back to the pool
   }
 }

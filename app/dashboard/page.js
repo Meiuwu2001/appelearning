@@ -18,20 +18,21 @@ const Dashboard = () => {
   const [classDescription, setClassDescription] = useState("");
   const [classCode, setClassCode] = useState("");
   const [classes, setClasses] = useState([]);
-  const storedRole = localStorage.getItem("role");
 
   useEffect(() => {
+    // Access localStorage and set role only on client-side
+    const storedRole = localStorage.getItem("role");
     setRole(storedRole);
+
     if (storedRole === "estudiante") {
       fetchStudentClasses();
     } else if (storedRole === "docente") {
       fetchTeacherClasses();
     }
-  }, [storedRole]);
+  }, []);
 
   const fetchStudentClasses = async () => {
     const idalum = localStorage.getItem("idalumn");
-    console.log(idalum);
     try {
       const response = await axios.get(`/api/alumnos_has_grupo/${idalum}`);
       if (Array.isArray(response.data)) {
@@ -70,7 +71,6 @@ const Dashboard = () => {
       const response = await axios.post("/api/alumnos_has_grupo", data);
 
       if (response.status === 200) {
-        console.log("Se unió a la clase exitosamente:", response.data);
         setClassCode("");
         setShowJoinClassModal(false);
         fetchStudentClasses();
@@ -95,7 +95,6 @@ const Dashboard = () => {
       const response = await axios.post("/api/grupos", data);
 
       if (response.status === 200) {
-        console.log("Clase creada exitosamente:", response.data);
         setClassName("");
         setClassDescription("");
         setShowCreateClassModal(false);

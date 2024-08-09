@@ -1,9 +1,10 @@
 import { NextResponse } from "next/server";
 import db from "@/libs/db";
+const connection = await db.getConnection();
 
 export async function GET() {
   try {
-    const [rows] = await db.query("SELECT * FROM docentes");
+    const [rows] = await connection.query("SELECT * FROM docentes");
     return NextResponse.json({ message: rows });
   } catch (error) {
     console.log("Error querying the database", error);
@@ -12,7 +13,7 @@ export async function GET() {
       { status: 500 }
     );
   } finally {
-    connection.release(); // Release the connection back to the pool
+    connection.release(); // Release the db back to the pool
   }
 }
 
@@ -20,7 +21,7 @@ export async function POST(request) {
   try {
     const { nombre, apellidos, titulo } = await request.json();
 
-    const result = await db.query("INSERT INTO docentes SET  ? ", {
+    const result = await connection.query("INSERT INTO docentes SET  ? ", {
       nombre,
       apellidos,
       titulo,
@@ -38,6 +39,6 @@ export async function POST(request) {
       { status: 500 }
     );
   } finally {
-    connection.release(); // Release the connection back to the pool
+    connection.release(); // Release the db back to the pool
   }
 }

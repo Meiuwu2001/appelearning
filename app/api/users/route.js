@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import db from "@/libs/db";
 import bcrypt from "bcryptjs";
+const connection = await db.getConnection();
 
 /**
  * This function handles GET requests to the API endpoint.
@@ -13,7 +14,7 @@ import bcrypt from "bcryptjs";
 export async function GET() {
   try {
     // Perform the query
-    const [rows] = await db.query("SELECT * FROM users");
+    const [rows] = await connection.query("SELECT * FROM users");
 
     // Return the result
     return NextResponse.json({ message: rows });
@@ -23,6 +24,8 @@ export async function GET() {
       { error: "Error querying the database" },
       { status: 500 }
     );
+  } finally {
+    connection.release(); // Release the db back to the pool
   }
 }
 
@@ -30,10 +33,7 @@ export async function GET() {
  * This function handles POST requests to the API endpoint.
  * It creates a new user in the database based on the provided request body.
  *
- * @param {Object} request - The incoming request object.
- * @param {string} request.body.user - The name of the user to be created.
- * @param {string} request.body.password - The password of the user to be created.
- * @param {string} request.body.role - The role of the user to be created.
+ * @param {NextRequest} request - The incoming request object.
  *
  * @returns {NextResponse} A NextResponse object containing a success message or an error message.
  *
@@ -57,7 +57,7 @@ export async function POST(request) {
     const hashedPassword = await bcrypt.hash(password, salt);
 
     // Perform the database operation
-    const result = await db.query(
+    const result = await connection.query(
       "INSERT INTO users (user, password, role) VALUES (?, ?, ?)",
       [user, hashedPassword, role]
     );
@@ -74,6 +74,6 @@ export async function POST(request) {
       { status: 500 }
     );
   } finally {
-    connection.release(); // Release the connection back to the pool
+    connection.release(); // Release the db back to the pool
   }
 }
