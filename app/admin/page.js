@@ -6,7 +6,7 @@ import Sidebar from "../components/Sidebar";
 import Modal from "../components/users/modalDelete";
 import { ModalEdit } from "../components/users/modalEdit";
 import { ModalAddUser } from "../components/users/modalAddUser"; // Asegúrate de que la ruta sea correcta
-import ProtectedRoute from "../components/ProtectedRoute";
+import ProtectedRoute from "../components/protectedRoute";
 import Navbar from "../components/Navbar";
 import { useRouter } from "next/navigation";
 

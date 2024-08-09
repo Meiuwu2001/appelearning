@@ -5,8 +5,8 @@ import axios from "axios";
 import Sidebar from "../components/Sidebar";
 import { ModalAddDocentes } from "../components/docentes/modalAddDocente"; // Asegúrate de que la ruta sea correcta
 import Modal from "../components/docentes/modalDelete";
-import { ModalEdit } from "../components/docentes/modalEdit";
-import ProtectedRoute from "../components/ProtectedRoute";
+import { ModalEdit } from "../components/docentes/ModalEdit";
+import ProtectedRoute from "../components/protectedRoute";
 import Navbar from "../components/Navbar";
 import { useRouter } from "next/navigation";
 

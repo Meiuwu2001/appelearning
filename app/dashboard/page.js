@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import Link from "next/link";
 import Sidebar from "../components/Sidebar";
-import ProtectedRoute from "../components/ProtectedRoute";
+import ProtectedRoute from "../components/protectedRoute";
 import Navbar from "../components/Navbar";
 import ModalJoinClass from "../components/ModalJoinClass";
 import ModalCreateClass from "../components/ModalCreateClass";

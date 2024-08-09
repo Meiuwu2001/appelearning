@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import axios from "axios";
-import ProtectedRoute from "@/app/components/ProtectedRoute";
+import ProtectedRoute from "../../components/protectedRoute";
 import Sidebar from "@/app/components/Sidebar";
 import Navbar from "@/app/components/Navbar";
 

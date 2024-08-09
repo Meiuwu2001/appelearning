@@ -6,7 +6,7 @@ import Sidebar from "../components/Sidebar";
 import Modal from "../components/alumnos/modalDelete";
 import { ModalEdit } from "../components/alumnos/modalEdit";
 import { ModalAddAlumno } from "../components/alumnos/ModalAddAlumno";
-import ProtectedRoute from "../components/ProtectedRoute";
+import ProtectedRoute from "../components/protectedRoute";
 import Navbar from "../components/Navbar";
 import { useRouter } from "next/navigation";
 
