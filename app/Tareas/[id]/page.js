@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import axios from "axios";
 import ProtectedRoute from "../../components/protectedRoute";
-import Sidebar from "../../../app/components/Sidebar";
+import Sidebar from "@/app/components/Sidebar";
 import Navbar from "../../../app/components/Navbar";
 
 const TaskPage = ({ params }) => {

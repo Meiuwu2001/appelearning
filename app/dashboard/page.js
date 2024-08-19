@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import Link from "next/link";
-import Sidebar from "../components/Sidebar";
+import Sidebar from "@/app/components/Sidebar";
 import ProtectedRoute from "../components/protectedRoute";
 import Navbar from "../components/Navbar";
 import ModalJoinClass from "../components/ModalJoinClass";

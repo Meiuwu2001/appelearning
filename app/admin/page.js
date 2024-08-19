@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import axios from "axios";
-import Sidebar from "../components/Sidebar";
+import Sidebar from "@/app/components/Sidebar";
 import Modal from "../components/users/modalDelete";
 import { ModalEdit } from "../components/users/modalEdit";
 import { ModalAddUser } from "../components/users/modalAddUser"; // Asegúrate de que la ruta sea correcta
